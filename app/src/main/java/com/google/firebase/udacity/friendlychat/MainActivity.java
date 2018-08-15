@@ -30,6 +30,9 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -51,9 +54,10 @@ public class MainActivity extends AppCompatActivity {
     private Button mSendButton;
 
     private String mUsername;
-
+    //Firebase instance variables
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessagesDatabaseReference;
+    private ChildEventListener mChildEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +65,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mUsername = ANONYMOUS;
-
+        //Firebase instance references
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("messages");
+
         // Initialize references to views
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mMessageListView = (ListView) findViewById(R.id.messageListView);
@@ -119,6 +124,46 @@ public class MainActivity extends AppCompatActivity {
                 mMessageEditText.setText("");
             }
         });
+        mChildEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                //is called for existing children when a listeners are first attached and then for
+                // any future children added when the listeners are still active.
+                //to get the value of the new message we use:
+               FriendlyMessage friendlyMessage = dataSnapshot.getValue(FriendlyMessage.class); // adding this parameter class means
+                // that the code will deserialize the message from the database into our plain
+                // FriendlyMessage object, this works because our object has the same fields as are
+                // in our messages object in the database.
+
+                //finaly we can add this FriendlyMessage object to our adapter:
+                mMessageAdapter.add(friendlyMessage);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                //won't be able to change existing messages.
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                //won't be able to remove existing messages.
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        //Adding child event listener we have just created to our database. Reference defines what
+        // exactly I am listening to, and listener defines what exaclty will happen to the data.
+        mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
     }
 
     @Override
