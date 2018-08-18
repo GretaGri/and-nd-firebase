@@ -51,5 +51,8 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
     implementation 'com.google.firebase:firebase-auth:16.0.3'
 
+    //Firebase notifications
+    implementation 'com.google.firebase:firebase-messaging:17.3.0'
+
 }
 apply plugin: 'com.google.gms.google-services'

@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                             mMessagesDatabaseReference.push().setValue(friendlyMessage);
                         } else {
                             // Handle failures
-                            // ...
+                            Toast.makeText(MainActivity.this,"Unable to download picture",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
