@@ -54,5 +54,7 @@ dependencies {
     //Firebase notifications
     implementation 'com.google.firebase:firebase-messaging:17.3.0'
 
+    //Firebase remote config
+    implementation 'com.google.firebase:firebase-config:16.0.0'
 }
 apply plugin: 'com.google.gms.google-services'
